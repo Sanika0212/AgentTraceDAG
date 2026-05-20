@@ -1,4 +1,4 @@
-"""Thread-safe SQLite event store for AgentReplay."""
+"""Thread-safe SQLite event store for AgentTraceDAG."""
 from __future__ import annotations
 
 import json
@@ -52,11 +52,11 @@ _MAX_QUERY_LIMIT = 1_000
 
 
 class SQLiteStore:
-    """Manages all persistence for AgentReplay using a local SQLite file."""
+    """Manages all persistence for AgentTraceDAG using a local SQLite file."""
 
     def __init__(
         self,
-        db_path: str | Path = ".agentreplay.db",
+        db_path: str | Path = ".agenttracedag.db",
         max_db_mb: int = _DEFAULT_MAX_DB_MB,
         retention_days: int = _DEFAULT_RETENTION_DAYS,
     ) -> None:

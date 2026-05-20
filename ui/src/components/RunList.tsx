@@ -25,7 +25,7 @@ export default function RunList({ runs, loading, selectedRunId, onSelect }: Prop
   return (
     <div className="w-60 bg-[#1a1a1a] border-r border-[#2a2a2a] flex flex-col h-full shrink-0">
       <div className="p-4 border-b border-[#2a2a2a]">
-        <h1 className="text-lg font-semibold text-[#e8e8e8]">AgentReplay</h1>
+        <h1 className="text-lg font-semibold text-[#e8e8e8]">AgentTraceDAG</h1>
         <p className="text-xs text-[#6a6a6a] mt-0.5">time-travel debugger</p>
       </div>
 

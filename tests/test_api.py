@@ -5,15 +5,15 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from agentreplay.models import NodeType, Run, TraceNode
-from agentreplay.server import app
-from agentreplay.sqlite_store import SQLiteStore
+from agenttracedag.models import NodeType, Run, TraceNode
+from agenttracedag.server import app
+from agenttracedag.sqlite_store import SQLiteStore
 
 
 @pytest.fixture(autouse=True)
 def patch_store(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SQLiteStore:
     store = SQLiteStore(db_path=tmp_path / "api_test.db")
-    import agentreplay.server as server_mod
+    import agenttracedag.server as server_mod
 
     monkeypatch.setattr(server_mod, "_get_store", lambda: store)
     return store

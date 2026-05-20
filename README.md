@@ -1,14 +1,14 @@
-# AgentReplay
+# AgentTraceDAG
 
 **Time-travel debugger for LLM agents.**
 
-When your agent fails on step 6 of 10, `stdout` JSON dumps are useless. AgentReplay intercepts every step, stores the exact state into a local SQLite DAG, and gives you a dashboard to scrub *backward in time* — seeing the precise context window, tool payloads, and token usage at any millisecond.
+When your agent fails on step 6 of 10, `stdout` JSON dumps are useless. AgentTraceDAG intercepts every step, stores the exact state into a local SQLite DAG, and gives you a dashboard to scrub *backward in time* — seeing the precise context window, tool payloads, and token usage at any millisecond.
 
 ---
 
-## Why AgentReplay?
+## Why AgentTraceDAG?
 
-| Problem | AgentReplay |
+| Problem | AgentTraceDAG |
 |---|---|
 | Agent hallucinates on step 4 | Time-scrub slider rewinds to exactly what the LLM saw |
 | Agent loops — why won't it break out? | Visual diff context window iteration 3 vs 4 (roadmap) |
@@ -21,15 +21,15 @@ When your agent fails on step 6 of 10, `stdout` JSON dumps are useless. AgentRep
 ## Quick Start
 
 ```bash
-pip install agentreplay
+pip install agenttracedag
 ```
 
 ### LangChain (drop-in callback)
 
 ```python
-from agentreplay.interceptors.langchain import AgentReplayCallback
+from agenttracedag.interceptors.langchain import AgentTraceDAGCallback
 
-cb = AgentReplayCallback(run_name="my-research-agent")
+cb = AgentTraceDAGCallback(run_name="my-research-agent")
 result = agent.invoke({"input": "What caused the 2008 financial crisis?"},
                       config={"callbacks": [cb]})
 
@@ -39,11 +39,11 @@ cb.serve()  # opens http://localhost:7474
 ### Raw OpenAI (monkey-patch)
 
 ```python
-from agentreplay.interceptors.openai_patch import patched
-import agentreplay
+from agenttracedag.interceptors.openai_patch import patched
+import agenttracedag
 
-run = agentreplay.Run(name="openai-debug", start_time=__import__("time").time())
-agentreplay.get_default_store().upsert_run(run)
+run = agenttracedag.Run(name="openai-debug", start_time=__import__("time").time())
+agenttracedag.get_default_store().upsert_run(run)
 
 with patched(run.id):
     response = openai.OpenAI().chat.completions.create(
@@ -51,13 +51,13 @@ with patched(run.id):
         messages=[{"role": "user", "content": "Hello"}]
     )
 
-agentreplay.serve()  # http://localhost:7474
+agenttracedag.serve()  # http://localhost:7474
 ```
 
 ### Anthropic
 
 ```python
-from agentreplay.interceptors.anthropic_patch import patched
+from agenttracedag.interceptors.anthropic_patch import patched
 
 with patched(run.id):
     response = anthropic.Anthropic().messages.create(...)
@@ -66,7 +66,7 @@ with patched(run.id):
 ### smolagents
 
 ```python
-from agentreplay.interceptors.smolagents_patch import wrap
+from agenttracedag.interceptors.smolagents_patch import wrap
 
 wrapped_agent = wrap(agent, run_name="my-smolagent")
 result = wrapped_agent.run("Solve this problem")
@@ -78,10 +78,10 @@ result = wrapped_agent.run("Solve this problem")
 
 ```bash
 # Start the dashboard (opens http://localhost:7474)
-python -m agentreplay
+python -m agenttracedag
 
 # Custom port or DB path
-python -m agentreplay --port 8080 --db /path/to/.agentreplay.db
+python -m agenttracedag --port 8080 --db /path/to/.agenttracedag.db
 ```
 
 **Three-panel layout:**
@@ -119,7 +119,7 @@ Your Agent Code
                   ▼
 ┌─────────────────────────────────────┐
 │        SQLite Event Store           │
-│  .agentreplay.db (WAL, indexed)     │
+│  .agenttracedag.db (WAL, indexed)     │
 │  runs table + trace_nodes DAG       │
 └─────────────────┬───────────────────┘
                   │ REST API
@@ -165,20 +165,20 @@ class TraceNode(BaseModel):
 
 ## Security
 
-AgentReplay is a **local-only development tool**. It is designed for use on your own machine:
+AgentTraceDAG is a **local-only development tool**. It is designed for use on your own machine:
 
 - Server binds to `127.0.0.1` by default (not network-accessible)
 - CORS restricted to localhost origins only
 - No telemetry, no cloud, no accounts
-- All data stays in `.agentreplay.db` on your filesystem
+- All data stays in `.agenttracedag.db` on your filesystem
 
-**Important:** LLM prompts often contain sensitive data (API keys, PII, customer data). The database is stored as plaintext SQLite. Do not commit `.agentreplay.db` to git. Add it to `.gitignore`:
+**Important:** LLM prompts often contain sensitive data (API keys, PII, customer data). The database is stored as plaintext SQLite. Do not commit `.agenttracedag.db` to git. Add it to `.gitignore`:
 
 ```
-.agentreplay.db
+.agenttracedag.db
 ```
 
-See [open security issues](https://github.com/Gustav-Proxi/agentreplay/labels/security) for planned hardening (encryption at rest, auth, TLS).
+See [open security issues](https://github.com/Gustav-Proxi/agenttracedag/labels/security) for planned hardening (encryption at rest, auth, TLS).
 
 ---
 
@@ -205,15 +205,15 @@ See [open security issues](https://github.com/Gustav-Proxi/agentreplay/labels/se
 
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions.
 
-Good first issues are tagged [`good first issue`](https://github.com/Gustav-Proxi/agentreplay/labels/good%20first%20issue).
+Good first issues are tagged [`good first issue`](https://github.com/Gustav-Proxi/agenttracedag/labels/good%20first%20issue).
 
 ---
 
 ## Related Projects
 
 - [VectorLens](https://github.com/Gustav-Proxi/vectorlens) — sister tool for RAG pipelines. Token-level attribution showing which retrieved chunks caused each output sentence.
-- [Arize Phoenix](https://github.com/Arize-ai/phoenix) — full observability platform (evaluation, datasets). AgentReplay is narrower: a debugger, not a platform.
-- [LangSmith](https://smith.langchain.com) — cloud-hosted tracing for LangChain. AgentReplay is local-first with zero telemetry.
+- [Arize Phoenix](https://github.com/Arize-ai/phoenix) — full observability platform (evaluation, datasets). AgentTraceDAG is narrower: a debugger, not a platform.
+- [LangSmith](https://smith.langchain.com) — cloud-hosted tracing for LangChain. AgentTraceDAG is local-first with zero telemetry.
 
 ---
 

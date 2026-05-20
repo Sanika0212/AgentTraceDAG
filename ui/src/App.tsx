@@ -95,7 +95,7 @@ export default function App() {
           {!selectedRunId && (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <p className="text-2xl font-semibold text-[#e8e8e8] mb-2">AgentReplay</p>
+                <p className="text-2xl font-semibold text-[#e8e8e8] mb-2">AgentTraceDAG</p>
                 <p className="text-[#8a8a8a]">Select a run to inspect its trace</p>
               </div>
             </div>

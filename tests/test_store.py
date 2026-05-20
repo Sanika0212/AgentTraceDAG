@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from agentreplay.models import NodeType, Run, RunStatus, TraceNode
-from agentreplay.sqlite_store import SQLiteStore
+from agenttracedag.models import NodeType, Run, RunStatus, TraceNode
+from agenttracedag.sqlite_store import SQLiteStore
 
 
 @pytest.fixture

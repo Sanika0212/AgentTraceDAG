@@ -1,4 +1,4 @@
-"""Tests for AgentReplay interceptors (OpenAI, Anthropic, smolagents)."""
+"""Tests for AgentTraceDAG interceptors (OpenAI, Anthropic, smolagents)."""
 from __future__ import annotations
 
 import sys
@@ -8,8 +8,8 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 
-from agentreplay.models import NodeType, RunStatus, TraceNode
-from agentreplay.sqlite_store import SQLiteStore
+from agenttracedag.models import NodeType, RunStatus, TraceNode
+from agenttracedag.sqlite_store import SQLiteStore
 
 
 @pytest.fixture
@@ -27,7 +27,7 @@ class TestOpenAIPatch:
 
     def test_patch_without_openai_installed(self) -> None:
         """Patch should raise ImportError with helpful message if openai not installed."""
-        from agentreplay.interceptors import openai_patch
+        from agenttracedag.interceptors import openai_patch
 
         # Save original state
         original_patch_state = openai_patch._patch_state.copy()
@@ -45,7 +45,7 @@ class TestOpenAIPatch:
 
     def test_patch_and_unpatch_restore_original(self, store: SQLiteStore) -> None:
         """Patching and unpatching should restore original OpenAI methods."""
-        from agentreplay.interceptors import openai_patch
+        from agenttracedag.interceptors import openai_patch
 
         # Create mock openai module
         mock_openai = MagicMock()
@@ -71,7 +71,7 @@ class TestOpenAIPatch:
 
     def test_successful_sync_call_records_node(self, store: SQLiteStore) -> None:
         """Successful chat.completions.create call should record a node."""
-        from agentreplay.interceptors import openai_patch
+        from agenttracedag.interceptors import openai_patch
 
         # Setup mocks
         mock_openai = MagicMock()
@@ -127,7 +127,7 @@ class TestOpenAIPatch:
 
     def test_sync_call_exception_records_error(self, store: SQLiteStore) -> None:
         """Exception in chat.completions.create should record error on node."""
-        from agentreplay.interceptors import openai_patch
+        from agenttracedag.interceptors import openai_patch
 
         mock_openai = MagicMock()
 
@@ -169,7 +169,7 @@ class TestOpenAIPatch:
 
     def test_patched_context_manager(self, store: SQLiteStore) -> None:
         """Context manager should patch and unpatch automatically."""
-        from agentreplay.interceptors import openai_patch
+        from agenttracedag.interceptors import openai_patch
 
         mock_openai = MagicMock()
         original_create = MagicMock()
@@ -196,7 +196,7 @@ class TestAnthropicPatch:
     def test_anthropic_patch_exists_or_skip(self) -> None:
         """Test that anthropic_patch can be imported if it exists."""
         try:
-            from agentreplay.interceptors import anthropic_patch  # noqa: F401
+            from agenttracedag.interceptors import anthropic_patch  # noqa: F401
 
             # If import succeeds, test exists (placeholder for actual tests)
             assert True
@@ -214,7 +214,7 @@ class TestSmolagentsWrap:
 
     def test_wrap_without_smolagents_installed(self, store: SQLiteStore) -> None:
         """wrap() should raise ImportError with helpful message if smolagents not installed."""
-        from agentreplay.interceptors import smolagents_patch
+        from agenttracedag.interceptors import smolagents_patch
 
         with patch.dict(sys.modules, {"smolagents": None}):
             with pytest.raises(ImportError, match="smolagents package not found"):
@@ -224,7 +224,7 @@ class TestSmolagentsWrap:
         self, store: SQLiteStore
     ) -> None:
         """wrap() should raise TypeError if agent is not a MultiStepAgent."""
-        from agentreplay.interceptors import smolagents_patch
+        from agenttracedag.interceptors import smolagents_patch
 
         mock_smolagents = MagicMock()
 
@@ -239,7 +239,7 @@ class TestSmolagentsWrap:
 
     def test_wrap_successful_run_records_root_node(self, store: SQLiteStore) -> None:
         """Successful agent.run() should record root AGENT node with task input and result output."""
-        from agentreplay.interceptors import smolagents_patch
+        from agenttracedag.interceptors import smolagents_patch
 
         # Mock smolagents
         mock_smolagents = MagicMock()
@@ -280,7 +280,7 @@ class TestSmolagentsWrap:
 
     def test_wrap_run_exception_records_error(self, store: SQLiteStore) -> None:
         """Exception in agent.run() should record error on root node and run."""
-        from agentreplay.interceptors import smolagents_patch
+        from agenttracedag.interceptors import smolagents_patch
 
         mock_smolagents = MagicMock()
 
@@ -315,7 +315,7 @@ class TestSmolagentsWrap:
         self, store: SQLiteStore
     ) -> None:
         """Agent.step() calls should record child CHAIN nodes."""
-        from agentreplay.interceptors import smolagents_patch
+        from agenttracedag.interceptors import smolagents_patch
 
         mock_smolagents = MagicMock()
 
@@ -361,8 +361,8 @@ class TestSmolagentsWrap:
 
     def test_wrap_uses_default_store(self) -> None:
         """wrap() should use get_default_store() if store is None."""
-        from agentreplay.interceptors import smolagents_patch
-        from agentreplay.sqlite_store import get_default_store
+        from agenttracedag.interceptors import smolagents_patch
+        from agenttracedag.sqlite_store import get_default_store
 
         mock_smolagents = MagicMock()
 
@@ -386,7 +386,7 @@ class TestSmolagentsWrap:
 
     def test_wrap_forwards_other_attributes(self, store: SQLiteStore) -> None:
         """Wrapped agent should forward non-run attributes to original agent."""
-        from agentreplay.interceptors import smolagents_patch
+        from agenttracedag.interceptors import smolagents_patch
 
         mock_smolagents = MagicMock()
 
@@ -419,7 +419,7 @@ class TestInterceptorIntegration:
 
     def test_multiple_runs_same_store(self, store: SQLiteStore) -> None:
         """Multiple runs should all be recorded in the same store."""
-        from agentreplay.interceptors import smolagents_patch
+        from agenttracedag.interceptors import smolagents_patch
 
         mock_smolagents = MagicMock()
 

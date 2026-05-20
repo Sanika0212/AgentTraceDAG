@@ -1,4 +1,4 @@
-"""FastAPI REST server exposing AgentReplay data, with background daemon launcher."""
+"""FastAPI REST server exposing AgentTraceDAG data, with background daemon launcher."""
 from __future__ import annotations
 
 import threading
@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from .models import Run, TraceNode
 from .sqlite_store import SQLiteStore, get_default_store
 
-app = FastAPI(title="AgentReplay", version="0.1.0")
+app = FastAPI(title="AgentTraceDAG", version="0.1.0")
 
 # Restrict CORS to localhost only — prevents remote pages exfiltrating trace data
 app.add_middleware(
@@ -81,7 +81,7 @@ def root() -> Any:
     if index.exists():
         return FileResponse(str(index))
     return {
-        "message": "AgentReplay API is running. UI not built yet.",
+        "message": "AgentTraceDAG API is running. UI not built yet.",
         "docs": "/docs",
         "runs": "/api/runs",
     }
@@ -99,7 +99,7 @@ def serve(
     port: int = 7474,
     open_browser: bool = False,
 ) -> None:
-    """Start the AgentReplay server in a background daemon thread.
+    """Start the AgentTraceDAG server in a background daemon thread.
 
     Safe to call multiple times — starts only once.
 
@@ -118,7 +118,7 @@ def serve(
     def _run() -> None:
         server.run()
 
-    _server_thread = threading.Thread(target=_run, daemon=True, name="agentreplay-server")
+    _server_thread = threading.Thread(target=_run, daemon=True, name="agenttracedag-server")
     _server_thread.start()
 
     if open_browser:
@@ -128,4 +128,4 @@ def serve(
         time.sleep(0.8)
         webbrowser.open(f"http://localhost:{port}")
 
-    print(f"AgentReplay dashboard: http://localhost:{port}")
+    print(f"AgentTraceDAG dashboard: http://localhost:{port}")

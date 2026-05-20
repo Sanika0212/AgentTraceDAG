@@ -16,7 +16,7 @@ def wrap(
     agent: Any, run_name: str = "smolagents-run", store: SQLiteStore | None = None
 ) -> Any:
     """
-    Wrap a smolagents agent to record all runs and steps into AgentReplay.
+    Wrap a smolagents agent to record all runs and steps into AgentTraceDAG.
 
     Args:
         agent: A smolagents MultiStepAgent instance

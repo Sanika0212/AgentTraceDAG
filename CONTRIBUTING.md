@@ -1,14 +1,14 @@
-# Contributing to AgentReplay
+# Contributing to AgentTraceDAG
 
-Thank you for your interest in contributing! AgentReplay is a local-first, zero-telemetry time-travel debugger for LLM agents.
+Thank you for your interest in contributing! AgentTraceDAG is a local-first, zero-telemetry time-travel debugger for LLM agents.
 
 ---
 
 ## Where to Start
 
-- **Good first issues:** [`good first issue`](https://github.com/Gustav-Proxi/agentreplay/labels/good%20first%20issue) — small, well-scoped tasks ideal for getting familiar with the codebase
-- **Help wanted:** [`help wanted`](https://github.com/Gustav-Proxi/agentreplay/labels/help%20wanted) — larger tasks where we'd love community input
-- **Security:** [`security`](https://github.com/Gustav-Proxi/agentreplay/labels/security) — hardening tasks (encryption, auth, TLS)
+- **Good first issues:** [`good first issue`](https://github.com/Gustav-Proxi/agenttracedag/labels/good%20first%20issue) — small, well-scoped tasks ideal for getting familiar with the codebase
+- **Help wanted:** [`help wanted`](https://github.com/Gustav-Proxi/agenttracedag/labels/help%20wanted) — larger tasks where we'd love community input
+- **Security:** [`security`](https://github.com/Gustav-Proxi/agenttracedag/labels/security) — hardening tasks (encryption, auth, TLS)
 
 ---
 
@@ -17,8 +17,8 @@ Thank you for your interest in contributing! AgentReplay is a local-first, zero-
 **Requirements:** Python 3.11+, Node.js 18+
 
 ```bash
-git clone https://github.com/Gustav-Proxi/agentreplay
-cd agentreplay
+git clone https://github.com/Gustav-Proxi/agenttracedag
+cd agenttracedag
 
 # Python backend
 pip install -e ".[dev]"
@@ -31,7 +31,7 @@ cd ui && npm install && npm run dev   # dev server at http://localhost:5173
 python -m pytest tests/ -v
 
 # Start API server (separate terminal)
-python -m agentreplay --no-browser
+python -m agenttracedag --no-browser
 ```
 
 ---
@@ -39,12 +39,12 @@ python -m agentreplay --no-browser
 ## Project Structure
 
 ```
-agentreplay/
-├── agentreplay/               # Python package
+agenttracedag/
+├── agenttracedag/               # Python package
 │   ├── models.py              # Pydantic schemas: Run, TraceNode, NodeType
 │   ├── sqlite_store.py        # Thread-safe SQLite store (WAL, indexes, retention)
 │   ├── server.py              # FastAPI REST API + background serve()
-│   ├── __main__.py            # CLI entrypoint: python -m agentreplay
+│   ├── __main__.py            # CLI entrypoint: python -m agenttracedag
 │   └── interceptors/
 │       ├── langchain.py       # LangChain BaseCallbackHandler
 │       ├── openai_patch.py    # OpenAI monkey-patch (sync + async)
@@ -71,7 +71,7 @@ agentreplay/
 
 Follow `interceptors/openai_patch.py` as a template:
 
-1. Create `agentreplay/interceptors/<provider>_patch.py`
+1. Create `agenttracedag/interceptors/<provider>_patch.py`
 2. Implement `patch(run_id, store)`, `unpatch()`, `patched()` context manager
 3. Use `threading.Lock` for `_patch_state` (thread safety — see the security audit)
 4. Lazy-import the SDK with a helpful error message
@@ -105,15 +105,15 @@ Follow `interceptors/openai_patch.py` as a template:
 
 **Do not open public issues for security vulnerabilities.**
 
-Email the maintainer directly or open a [private security advisory](https://github.com/Gustav-Proxi/agentreplay/security/advisories/new) on GitHub.
+Email the maintainer directly or open a [private security advisory](https://github.com/Gustav-Proxi/agenttracedag/security/advisories/new) on GitHub.
 
-See the [security label](https://github.com/Gustav-Proxi/agentreplay/labels/security) for known issues being tracked publicly (non-critical hardening tasks).
+See the [security label](https://github.com/Gustav-Proxi/agenttracedag/labels/security) for known issues being tracked publicly (non-critical hardening tasks).
 
 ---
 
 ## Design Philosophy
 
-AgentReplay follows the same principles as [VectorLens](https://github.com/Gustav-Proxi/vectorlens):
+AgentTraceDAG follows the same principles as [VectorLens](https://github.com/Gustav-Proxi/vectorlens):
 
 - **Invisible infrastructure:** zero Docker, zero Postgres, zero accounts. One `pip install`.
 - **Local-first, zero telemetry:** your prompts and agent data never leave your machine.

@@ -1,4 +1,4 @@
-"""Core Pydantic schemas for AgentReplay."""
+"""Core Pydantic schemas for AgentTraceDAG."""
 from __future__ import annotations
 
 import json

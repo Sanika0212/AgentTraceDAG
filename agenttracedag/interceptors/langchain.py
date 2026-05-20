@@ -1,4 +1,4 @@
-"""LangChain callback handler that records all agent steps into AgentReplay."""
+"""LangChain callback handler that records all agent steps into AgentTraceDAG."""
 from __future__ import annotations
 
 import time
@@ -15,18 +15,18 @@ try:
 except ImportError as e:
     raise ImportError(
         "langchain-core is required for the LangChain interceptor. "
-        "Install it with: pip install agentreplay[langchain]"
+        "Install it with: pip install agenttracedag[langchain]"
     ) from e
 
 
-class AgentReplayCallback(BaseCallbackHandler):
-    """Drop-in LangChain callback that captures every step into AgentReplay.
+class AgentTraceDAGCallback(BaseCallbackHandler):
+    """Drop-in LangChain callback that captures every step into AgentTraceDAG.
 
     Usage::
 
-        from agentreplay.interceptors.langchain import AgentReplayCallback
+        from agenttracedag.interceptors.langchain import AgentTraceDAGCallback
 
-        cb = AgentReplayCallback()
+        cb = AgentTraceDAGCallback()
         agent.invoke({"input": "..."}, config={"callbacks": [cb]})
         cb.serve()   # open dashboard at http://localhost:7474
     """

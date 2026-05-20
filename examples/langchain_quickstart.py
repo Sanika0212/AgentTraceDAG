@@ -1,8 +1,8 @@
 """
-AgentReplay + LangChain quickstart.
+AgentTraceDAG + LangChain quickstart.
 
 Requirements:
-    pip install agentreplay[langchain] langchain-openai
+    pip install agenttracedag[langchain] langchain-openai
 
 Usage:
     OPENAI_API_KEY=sk-... python examples/langchain_quickstart.py
@@ -14,7 +14,7 @@ from langchain.tools import tool
 from langchain_openai import ChatOpenAI
 from langchain import hub
 
-from agentreplay.interceptors.langchain import AgentReplayCallback
+from agenttracedag.interceptors.langchain import AgentTraceDAGCallback
 
 
 @tool
@@ -39,8 +39,8 @@ def main() -> None:
 
     agent = create_react_agent(llm, tools, prompt)
 
-    # One line to enable AgentReplay tracing
-    cb = AgentReplayCallback(run_name="langchain-quickstart")
+    # One line to enable AgentTraceDAG tracing
+    cb = AgentTraceDAGCallback(run_name="langchain-quickstart")
 
     executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
     result = executor.invoke(

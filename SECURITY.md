@@ -2,13 +2,13 @@
 
 ## Scope
 
-AgentReplay is a **local development tool**. It is designed to run on your own machine, bound to `127.0.0.1`, with no network exposure.
+AgentTraceDAG is a **local development tool**. It is designed to run on your own machine, bound to `127.0.0.1`, with no network exposure.
 
 ## Reporting a Vulnerability
 
 **Do not open public GitHub issues for security vulnerabilities.**
 
-Please report security issues via [GitHub private security advisories](https://github.com/Gustav-Proxi/agentreplay/security/advisories/new).
+Please report security issues via [GitHub private security advisories](https://github.com/Gustav-Proxi/agenttracedag/security/advisories/new).
 
 Include:
 - Description of the vulnerability
@@ -24,15 +24,15 @@ These are **by design** limitations of the current MVP. Tracked issues are linke
 
 | Issue | Severity | Status | Issue |
 |---|---|---|---|
-| Trace data stored as plaintext (prompts may contain API keys, PII) | HIGH | Open | [#1](https://github.com/Gustav-Proxi/agentreplay/issues/1) |
-| No authentication on REST endpoints | MEDIUM | Open | [#2](https://github.com/Gustav-Proxi/agentreplay/issues/2) |
-| No HTTPS/TLS | MEDIUM | Open | [#3](https://github.com/Gustav-Proxi/agentreplay/issues/3) |
+| Trace data stored as plaintext (prompts may contain API keys, PII) | HIGH | Open | [#1](https://github.com/Gustav-Proxi/agenttracedag/issues/1) |
+| No authentication on REST endpoints | MEDIUM | Open | [#2](https://github.com/Gustav-Proxi/agenttracedag/issues/2) |
+| No HTTPS/TLS | MEDIUM | Open | [#3](https://github.com/Gustav-Proxi/agenttracedag/issues/3) |
 
 ## Safe Usage Guidelines
 
-1. **Never commit `.agentreplay.db` to git.** Add it to `.gitignore`.
+1. **Never commit `.agenttracedag.db` to git.** Add it to `.gitignore`.
 2. **Do not expose port 7474 externally.** The server binds to `127.0.0.1` by default.
-3. **Do not run AgentReplay on a shared server** with untrusted users until authentication is implemented (#2).
+3. **Do not run AgentTraceDAG on a shared server** with untrusted users until authentication is implemented (#2).
 4. **Treat the DB file like a log file** — it contains your full prompt history.
 
 ## Fixed Vulnerabilities

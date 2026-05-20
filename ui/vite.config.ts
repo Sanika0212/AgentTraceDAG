@@ -9,7 +9,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "../agentreplay/ui_dist",
+    outDir: "../agenttracedag/ui_dist",
     emptyOutDir: true,
   },
 });

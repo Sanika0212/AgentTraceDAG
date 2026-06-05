@@ -1,6 +1,13 @@
-# AgentTraceDAG
+<h1 align="center">AgentTraceDAG</h1>
 
-**Time-travel debugger for LLM agents.**
+<p align="center"><em>Time-travel debugger for LLM agents — intercept every step, store it in a local SQLite DAG, scrub backward in time.</em></p>
+
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.11+-58A6FF?style=flat-square&logo=python&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-7C3AED?style=flat-square">
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-0.110+-58A6FF?style=flat-square&logo=fastapi&logoColor=white">
+  <img alt="SQLite" src="https://img.shields.io/badge/Storage-SQLite-7C3AED?style=flat-square&logo=sqlite&logoColor=white">
+</p>
 
 When your agent fails on step 6 of 10, `stdout` JSON dumps are useless. AgentTraceDAG intercepts every step, stores the exact state into a local SQLite DAG, and gives you a dashboard to scrub *backward in time* — seeing the precise context window, tool payloads, and token usage at any millisecond.
 
@@ -106,36 +113,20 @@ python -m agenttracedag --port 8080 --db /path/to/.agenttracedag.db
 
 ## Architecture
 
-```
-Your Agent Code
-      │
-      ▼
-┌─────────────────────────────────────┐
-│         Auto-Interceptors           │
-│  LangChain  │  OpenAI  │ Anthropic  │
-│  Callback   │  Patch   │   Patch    │
-└─────────────────┬───────────────────┘
-                  │ TraceNode (immutable)
-                  ▼
-┌─────────────────────────────────────┐
-│        SQLite Event Store           │
-│  .agenttracedag.db (WAL, indexed)     │
-│  runs table + trace_nodes DAG       │
-└─────────────────┬───────────────────┘
-                  │ REST API
-                  ▼
-┌─────────────────────────────────────┐
-│        FastAPI Server               │
-│  GET /api/runs                      │
-│  GET /api/runs/{id}/nodes           │
-└─────────────────┬───────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────┐
-│     React + Tailwind Dashboard      │
-│  TimelineView │ PayloadInspector    │
-│  ScrubBar     │ RunList             │
-└─────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A[Your Agent Code] --> B[Auto-Interceptors]
+
+    subgraph B[Auto-Interceptors]
+        B1[LangChain Callback]
+        B2[OpenAI Patch]
+        B3[Anthropic Patch]
+        B4[smolagents Wrapper]
+    end
+
+    B --> C[SQLite Event Store\n.agenttracedag.db\nruns + trace_nodes DAG]
+    C --> D[FastAPI Server\nGET /api/runs\nGET /api/runs/{id}/nodes]
+    D --> E[React + Tailwind Dashboard\nRunList · Timeline · ScrubBar · PayloadInspector]
 ```
 
 ---
